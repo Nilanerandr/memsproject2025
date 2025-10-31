@@ -15,6 +15,7 @@
     "@mui/material": "^7.3.4",
     "@mui/x-charts": "^8.14.0",
     "@mui/x-data-grid": "^8.14.0",
+    "axios": "^1.13.1",
     "gsap": "^3.13.0",
     "motion": "^12.23.22",
     "postprocessing": "^6.37.8",

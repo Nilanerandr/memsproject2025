@@ -6,7 +6,7 @@ import { requireAuth } from '../middlewares/auth.js';
 const router = express.Router();
 
 // Lier un device à l'admin connecté
-router.post('/devices/link', requireAuth, linkDeviceToCurrentUser);
+router.post('/devices/link', linkDeviceToCurrentUser);
 
 // Voir le propriétaire d'un device
 router.get('/devices/:nom_esp32/owner', requireAuth, getDeviceOwner);
