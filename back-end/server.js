@@ -67,6 +67,7 @@ app.use('/api/users', usersRoutes);
 app.use('/api', payementRoutes);
 app.use('/api', esp32Routes);
 app.use('/api', prixRoutes);
+app.use('/api', deviceOwnerRoutes);
 
 // ========== SOCKET.IO ==========
 
@@ -123,4 +124,3 @@ process.on('SIGINT', () => {
   });
 });
 
-app.use('/api', deviceOwnerRoutes);

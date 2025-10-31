@@ -15,8 +15,13 @@ const auth = (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     
     // Ajouter les infos de l'utilisateur à la requête
-    req.user = decoded;
-    
+    // req.user = decoded;
+      // ✅ Normalisation : s'assure que req.user.id existe toujours
+    req.user = {
+      id: decoded.id_user || decoded.id || decoded.userId,
+      email: decoded.email,
+      roles: decoded.roles || [],
+    };
     // Passer au middleware/contrôleur suivant
     next();
   } catch (error) {

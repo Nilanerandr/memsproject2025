@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // Base URL de ton API
-const API_BASE_URL = 'http://localhost:8000/api/users'; // change selon ton backend
+const API_BASE_URL = 'http://localhost:8080/api/users'; // change selon ton backend
 
 // Ajouter un header par défaut si tu utilises JWT
 const axiosInstance = axios.create({
@@ -15,12 +15,8 @@ const axiosInstance = axios.create({
 
 export const registerUser = async (formData) => {
   try {
-    const response = await axiosInstance.post('/register', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data', // obligatoire pour envoyer un fichier
-      },
-    });
-    return response.data; // retourne la réponse du backend
+    const response = await axiosInstance.post('/register', formData); // laisse Axios gérer le Content-Type
+    return response.data; 
   } catch (error) {
     console.error('Erreur registerUser :', error.response?.data || error.message);
     throw error;

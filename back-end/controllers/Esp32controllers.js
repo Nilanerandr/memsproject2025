@@ -2,7 +2,7 @@
 import * as DonneesModel from '../models/DonneeESP32.js';
 import * as PayementModel from '../models/Payement.js';
 import * as PrixModel from '../models/PrixParminutes.js';
-import * as DeviceOwnerModel from '../models/DeviceOwner.js';
+import * as DeviceOwnerModel from '../models/Owner.js';
 import * as ConsModel from '../models/Consommationpc.js';
 
 // Puissance moyenne (W) configurable via .env, sinon 60W par défaut

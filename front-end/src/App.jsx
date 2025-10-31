@@ -11,12 +11,17 @@ import {
 
 import Hyperspeed from "./BACKGROUND/Hyperspeed";
 import "./navbar.css";
-
+import ProtectedRoute from "./Protectedroutes"
 import Home from "./Pages/HOME/Home";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import HistoriqueNotification from "./Pages/Notification/Notification";
 function App() {
   const [openMenu, setOpenMenu] = useState(false);
+const handleLogout = () => {
+  localStorage.removeItem("token"); // supprime le token
+  setOpenMenu(false); // ferme le menu
+  window.location.href = "/"; // redirige vers Home
+};
 
   const toggleMenu = () => {
     setOpenMenu(!openMenu);
@@ -62,7 +67,7 @@ function App() {
                 <div className="submenu">
                  
 
-                  <div className="submenu-item">
+                  <div className="submenu-item" onClick={handleLogout}>
                     <FaSignOutAlt className="submenu-icon" />
                     <span>Logout</span>
                   </div>
@@ -76,10 +81,27 @@ function App() {
         <div style={{ position: "relative", zIndex: 5 }}>
           <Routes>
             <Route path="/" element={<Home/>} />
-            <Route path="/dashboard" element={<Dashboard/>} />
-            <Route path="/notifications" element={<HistoriqueNotification/>} />
+            
+  <Route 
+    path="/dashboard" 
+    element={
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
+    } 
+  />
+  
+  <Route 
+    path="/notifications" 
+    element={
+      <ProtectedRoute>
+        <HistoriqueNotification />
+      </ProtectedRoute>
+    } 
+  />
+</Routes>
           
-          </Routes>
+          
         </div>
       </div>
     </Router>

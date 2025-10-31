@@ -2,13 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import "remixicon/fonts/remixicon.css";
 import "./Login.css";
 import "./register.css";
+import { registerUser } from "../../api/apiregisterandlogin.js";
+import { createDeviceLink } from "../../api/apiowner.js";
 
-export default function RegisterModal({ open, onClose, onSubmit }) {
+export default function RegisterModal({ open, onClose }) {
   const firstInputRef = useRef(null);
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -18,7 +21,6 @@ export default function RegisterModal({ open, onClose, onSubmit }) {
     return () => document.removeEventListener("keydown", esc);
   }, [open, onClose]);
 
-  // Nettoyer la prévisualisation quand le modal se ferme
   useEffect(() => {
     if (!open && photoPreview) {
       URL.revokeObjectURL(photoPreview);
@@ -34,9 +36,7 @@ export default function RegisterModal({ open, onClose, onSubmit }) {
         alert('Veuillez sélectionner un fichier image valide');
         return;
       }
-      if (photoPreview) {
-        URL.revokeObjectURL(photoPreview);
-      }
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
       const previewUrl = URL.createObjectURL(file);
       setPhotoPreview(previewUrl);
       setPhotoFile(file);
@@ -44,12 +44,39 @@ export default function RegisterModal({ open, onClose, onSubmit }) {
   };
 
   const removePhoto = () => {
-    if (photoPreview) {
-      URL.revokeObjectURL(photoPreview);
-    }
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
     setPhotoPreview(null);
     setPhotoFile(null);
   };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const formData = new FormData(e.currentTarget);
+    if (photoFile) formData.set('photo', photoFile);
+
+    // 1️⃣ Envoi FormData à registerUser (multipart/form-data)
+    const userResponse = await registerUser(formData);
+    const { user, token } = userResponse;
+
+    // 2️⃣ Stocker le token
+    localStorage.setItem('token', token);
+
+    // 3️⃣ Lier le device ESP32 (JSON simple)
+    await createDeviceLink({ nom_esp32: formData.get('nom_esp32') });
+
+    alert("Inscription réussie et ESP32 lié !");
+    onClose?.();
+  } catch (err) {
+    console.error(err);
+    alert(err.response?.data?.message || "Erreur lors de l'inscription");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (!open) return null;
 
@@ -73,58 +100,25 @@ export default function RegisterModal({ open, onClose, onSubmit }) {
           <p id="register-desc" className="am-desc">Fill in your information to get started.</p>
         </header>
 
-        <form
-          className="am-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const formData = new FormData(e.currentTarget);
-            if (photoFile) {
-              formData.set('photo', photoFile);
-            }
-            const data = Object.fromEntries(formData);
-            onSubmit?.(data);
-            onClose?.();
-          }}
-        >
+        <form className="am-form" onSubmit={handleSubmit}>
           <div className="am-grid2">
             <label className="am-field">
               <span className="am-label">First name</span>
-              <input 
-                ref={firstInputRef} 
-                name="firstName" 
-                type="text" 
-                required 
-                placeholder="Jane" 
-                className="am-input" 
-              />
+              <input ref={firstInputRef} name="name" type="text" required placeholder="Jane" className="am-input" />
             </label>
 
-            {/* Input Photo remplaçant lastName */}
             <label className="am-field">
               <span className="am-label">Photo</span>
               <div className="am-photo-wrapper">
-                <input 
-                  name="photo" 
-                  type="file" 
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                  className="am-input-file" 
-                  id="photo-upload"
-                />
+                <input name="img" type="file" accept="image/*" onChange={handlePhotoChange} className="am-input-file" id="photo-upload" />
                 <label htmlFor="photo-upload" className="am-file-label">
                   <i className="ri-image-add-line" aria-hidden="true" />
                   <span>{photoFile ? photoFile.name : 'Choose photo'}</span>
                 </label>
-                
                 {photoPreview && (
                   <div className="am-photo-preview">
                     <img src={photoPreview} alt="Preview" />
-                    <button 
-                      type="button" 
-                      className="am-photo-remove" 
-                      onClick={removePhoto}
-                      aria-label="Remove photo"
-                    >
+                    <button type="button" className="am-photo-remove" onClick={removePhoto} aria-label="Remove photo">
                       <i className="ri-close-circle-fill" aria-hidden="true" />
                     </button>
                   </div>
@@ -133,47 +127,22 @@ export default function RegisterModal({ open, onClose, onSubmit }) {
             </label>
           </div>
 
-          {/* Input Nom ESP32 */}
           <label className="am-field">
             <span className="am-label">ESP32 Name</span>
-            <input 
-              name="esp32Name" 
-              type="text" 
-              required 
-              placeholder="ESP32-001" 
-              className="am-input" 
-            />
+            <input name="nom_esp32" type="text" required placeholder="ESP32-001" className="am-input" />
           </label>
 
           <label className="am-field">
             <span className="am-label">Email</span>
-            <input 
-              name="email" 
-              type="email" 
-              required 
-              placeholder="name@domain.com" 
-              className="am-input" 
-            />
+            <input name="email" type="email" required placeholder="name@domain.com" className="am-input" />
           </label>
 
           <div className="am-grid2">
             <label className="am-field">
               <span className="am-label">Password</span>
               <div className="am-password">
-                <input 
-                  name="password" 
-                  type={show1 ? "text" : "password"} 
-                  required 
-                  placeholder="••••••••" 
-                  className="am-input" 
-                />
-                <button 
-                  type="button" 
-                  className="am-eye" 
-                  aria-pressed={show1 ? "true" : "false"} 
-                  aria-label={show1 ? "Hide password" : "Show password"} 
-                  onClick={() => setShow1(s => !s)}
-                >
+                <input name="password" type={show1 ? "text" : "password"} required placeholder="••••••••" className="am-input" />
+                <button type="button" className="am-eye" aria-pressed={show1 ? "true" : "false"} aria-label={show1 ? "Hide password" : "Show password"} onClick={() => setShow1(s => !s)}>
                   <i className={show1 ? "ri-eye-off-line" : "ri-eye-line"} aria-hidden="true" />
                 </button>
               </div>
@@ -182,37 +151,23 @@ export default function RegisterModal({ open, onClose, onSubmit }) {
             <label className="am-field">
               <span className="am-label">Confirm</span>
               <div className="am-password">
-                <input 
-                  name="confirm" 
-                  type={show2 ? "text" : "password"} 
-                  required 
-                  placeholder="••••••••" 
-                  className="am-input" 
-                />
-                <button 
-                  type="button" 
-                  className="am-eye" 
-                  aria-pressed={show2 ? "true" : "false"} 
-                  aria-label={show2 ? "Hide password" : "Show password"} 
-                  onClick={() => setShow2(s => !s)}
-                >
+                <input name="confirm" type={show2 ? "text" : "password"} required placeholder="••••••••" className="am-input" />
+                <button type="button" className="am-eye" aria-pressed={show2 ? "true" : "false"} aria-label={show2 ? "Hide password" : "Show password"} onClick={() => setShow2(s => !s)}>
                   <i className={show2 ? "ri-eye-off-line" : "ri-eye-line"} aria-hidden="true" />
                 </button>
               </div>
             </label>
           </div>
 
-          <button className="am-primary" type="submit">
+          <button className="am-primary" type="submit" disabled={loading}>
             <i className="ri-user-add-line" aria-hidden="true" />
-            <span>Create account</span>
+            <span>{loading ? "Processing..." : "Create account"}</span>
           </button>
 
           <div className="am-legal">
             En créant un compte, accepter les conditions et la politique de confidentialité.
           </div>
         </form>
-
-      
       </div>
     </div>
   );
