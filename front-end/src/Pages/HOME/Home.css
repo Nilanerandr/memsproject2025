@@ -1,0 +1,46 @@
+
+/* Bouton principal inscription */
+.get-register-btn {
+  background-color: #000;         /* Fond noir */
+  color: #fff;                    /* Texte blanc */
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 2vw;
+}
+
+/* Effet au survol */
+.get-register-btn:hover {
+          /* Légèrement plus clair */
+ transform: translateY(-0.2vw);
+}
+
+/* Animation lors du clic */
+.get-register-btn:active {
+  transform: scale(0.97);
+}
+
+/* Responsive : ajuste la taille sur petits écrans */
+@media (max-width: 768px) {
+  .get-register-btn {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+}
+
+/* Pour très petits écrans (smartphones) */
+@media (max-width: 480px) {
+  .get-register-btn {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+    border-radius: 6px;
+  }
+}

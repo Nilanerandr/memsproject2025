@@ -1,0 +1,173 @@
+/* --- Conteneur principal de la barre --- */
+.navbar {
+  width: 40vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+   -webkit-backdrop-filter: blur(10px); /* ✅ Safari & iOS support */
+  backdrop-filter: blur(10px);         /* ✅ Chrome, Edge, Firefox */
+  /* background: rgba(15, 15, 15, 0.4); */
+  padding: 1vw 0;
+  border-radius: 10px;
+  position: fixed;
+  top: 2vw ;
+  right: 1vw;
+  height: 4vw;
+  z-index:5;
+  /* background-color: #0072ff; */
+ 
+}
+
+/* --- Chaque onglet --- */
+.nav-item {
+  padding: 1vw;
+  height: 3vw;
+  background-color: #22181800;
+  color:white;
+  display: flex;
+ text-decoration: none; 
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+/* --- Effet au survol --- */
+.nav-item:hover {
+  background-color: #000000;
+  color: white;
+}
+
+/* --- Sous-menu --- */
+.menu {
+  position: relative;
+}
+
+.submenu {
+  position: absolute;
+  top: 3.5vw;
+  left: -1vw;
+  background-color: #1a1a1a15;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  width: 8vw;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  font-size: 1vw;
+  
+}
+
+.submenu-item {
+  padding: 0.8vw ;
+  color: #f8f7f7;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #333;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+   text-decoration: none; 
+  
+}
+
+.submenu-item:last-child {
+  border-bottom: none;
+}
+
+.submenu-item:hover {
+  background-color: #2b2b2b;
+  color: white;
+  border-radius: 0.5vw;
+}
+.submenu-icon {
+  font-size: 1.2vw;
+}
+/* Icônes principales */
+.nav-icon {
+  font-size: 1.2vw;
+  margin-right: 0.5vw;
+  
+}
+.header{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 20vw;
+  /* background-color: rebeccapurple; */
+  font-size: 1vw;
+  position: absolute;
+  left: 5vw;
+  color: white;
+  top: 1vw;
+  
+
+}
+.imgdiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  padding: 5px;
+  background: linear-gradient(135deg, #00c6ff, #0072ff); /* Dégradé bleu */
+  box-shadow: 0 0 20px rgba(0, 114, 255, 0.6),
+              0 0 40px rgba(0, 198, 255, 0.4);
+  /* animation: rotate360 5s linear infinite; */
+}
+
+/* Image interne */
+.img1 {
+  height: 6vw;
+  width: 6vw;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+/* Animation rotation */
+@keyframes rotate360 {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.title {
+   margin-left: 1vw;
+  font-size: 2.5vw;
+  color: #00aaff; /* Bleu de base du texte */
+  
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #00aaff, #8a2be2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; /* Fait apparaître le dégradé */
+  
+  /* Effet text-shadow lumineux */
+  text-shadow:
+    0 0 5px rgba(0, 170, 255, 0.7),
+    0 0 10px rgba(138, 43, 226, 0.5),
+    0 0 20px rgba(0, 170, 255, 0.3);
+
+  /* Animation subtile pour un effet dynamique */
+  animation: glowPulse 3s infinite alternate;
+}
+
+/* Animation légère du glow */
+@keyframes glowPulse {
+  0% {
+    text-shadow:
+      0 0 5px rgba(0, 170, 255, 0.7),
+      0 0 10px rgba(138, 43, 226, 0.5),
+      0 0 20px rgba(0, 170, 255, 0.3);
+  }
+  100% {
+    text-shadow:
+      0 0 10px rgba(0, 170, 255, 0.9),
+      0 0 20px rgba(138, 43, 226, 0.7),
+      0 0 40px rgba(0, 170, 255, 0.5);
+  }
+}

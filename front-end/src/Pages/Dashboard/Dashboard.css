@@ -1,0 +1,213 @@
+:root{
+  --bg:#0b1220;
+  --panel:#0f172a;
+  --panel-2:#131c31;
+  --text:#e6efff;
+  --muted:#9bb3d8;
+  --primary:#3ab4ff;
+  --secondary:#7a5cff;
+  --radius:14px;
+  --shadow:0 10px 28px rgba(0,0,0,.35);
+  --glow:0 0 16px rgba(58,180,255,.35), 0 0 24px rgba(122,92,255,.22);
+   --sb-w: 264px;          /* largeur sidebar ouverte */
+  --sb-w-collapsed: 5.2%; /* largeur sidebar réduite */
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{
+  margin:0;
+  background:linear-gradient(180deg,#0b1220 0%,#0a1020 100%);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Noto Sans",sans-serif;
+}
+
+.dash-wrap{display:flex;min-height:100dvh;margin-top: 8vw;}
+.cm-stack{flex:1;display:flex;flex-direction:column;min-width:0}
+
+/* SIDEBAR */
+.cm-sidebar{
+  width:264px; flex:0 0 264px;
+  background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);
+  border-right:1px solid rgba(255,255,255,.06);
+  box-shadow:var(--shadow);
+  position:relative; z-index:30;
+  transition:transform .25s ease,width .25s ease;
+  bottom: 0 !important;
+  
+}
+.cm-sidebar.collapsed{ width:88px; flex-basis:88px; }
+
+.cm-side-toggle{
+  position:absolute; right:-12px; top:16px; z-index:10;
+  width:28px;height:28px;border-radius:50%;
+  background:var(--panel-2);border:1px solid rgba(255,255,255,.08);
+  color:var(--text);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);
+}
+
+.cm-brand{
+  display:flex;align-items:center;gap:12px;
+  padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.06);
+    border: solid rgb(97, 94, 94) 0.1vw;
+    border-radius: 1vw;
+    background-color: rgb(12, 12, 12);
+}
+.cm-logo{
+  width:38px;height:38px;border-radius:50%;
+  background:radial-gradient(circle at 50% 40%, #0fe 10%, #09f 45%, #0070f3 75%);
+  box-shadow:var(--glow);
+}
+.cm-title{font-weight:700;letter-spacing:.2px}
+.cm-sidebar.collapsed .cm-title{display:none}
+
+.cm-nav{padding:14px 10px}
+.cm-sec{
+  display:block;margin:8px 0 6px;padding:0 8px;
+  font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;
+}
+.cm-link{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 12px;margin:4px 2px;border-radius:12px;
+  color:var(--text);text-decoration:none;
+  transition:background .2s ease,color .2s ease,transform .05s ease;
+}
+.cm-link:hover{background:rgba(122,92,255,.12)}
+/* même style pour hover et actif (plus doux) */
+.cm-link:hover,
+.cm-link.active{
+  background: rgba(122,92,255,.12);
+  box-shadow: none;
+}
+
+.cm-ic{width:22px;height:22px;color:var(--primary)}
+.cm-sidebar.collapsed .cm-lb{display:none}
+
+/* Bloc utilisateur collé en bas */
+.cm-userbox{
+  position:sticky; bottom:0; /* reste visible en bas du panneau */
+  padding:12px; display:flex; align-items:center; gap:12px;
+  background:rgba(255,255,255,.04);
+  border-top:1px solid rgba(255,255,255,.06);
+}
+.cm-avatar{
+  width:44px;height:44px;border-radius:100%;object-fit:cover;
+  border:2px solid rgba(58,180,255,.55);box-shadow:var(--glow);
+}
+.cm-usertext{min-width:0}
+.cm-username{font-weight:700}
+.cm-userrole{font-size:12px;color:var(--muted)}
+.cm-sidebar.collapsed .cm-usertext{display:none}
+
+/* TOP BAR (avec fallback et support Safari) */
+.cm-top{
+  position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 16px;
+
+  /* Fallback sans flou */
+  background:none !important;
+  /* border-bottom:1px solid rgba(255,255,255,.06); */
+}
+/* Activer le flou si supporté (Safari + navigateurs modernes) */
+@supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)){
+  .cm-top{
+    background:linear-gradient(180deg, rgba(15,23,42,.90) 0%, rgba(19,28,49,.75) 100%);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+}
+
+.cm-menu{
+  display:none;width:42px;height:42px;border-radius:12px;
+  border:1px solid rgba(255,255,255,.08);
+  background:var(--panel-2);color:var(--text);cursor:pointer;
+}
+.cm-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:12px;
+  background-color: rgb(15, 15, 15);
+  border:1px solid rgba(255,255,255,.12);color:var(--text);
+}
+
+/* MAIN */
+.cm-main{flex:1;display:flex;flex-direction:column;min-width:0}
+.cm-content{padding:16px}
+.cm-card{
+  background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+}
+
+/* OVERLAY + SLIDE-IN MOBILE */
+.cm-overlay{display:none}
+@media (max-width: 960px){
+  .cm-menu{display:inline-grid;place-items:center}
+
+  .cm-sidebar{
+    position:fixed;left:0;top:0;bottom:0;
+    transform:translateX(-100%);
+    width:288px;flex-basis:288px;
+  
+  }
+  .cm-sidebar.open{transform:translateX(0)}
+
+  .cm-overlay{
+    display:block;position:fixed;inset:0;
+    background:rgba(0,0,0,.5); /* Fallback sans flou */
+    z-index:20;pointer-events:none;opacity:0;transition:opacity s ease;
+  }
+  .cm-sidebar.open ~ .cm-overlay{pointer-events:auto;opacity:1}
+
+  /* Flou si supporté (Safari inclus avec -webkit-) */
+  @supports ((-webkit-backdrop-filter: none) or (backdrop-filter: none)){
+    .cm-overlay{
+      background:rgba(0,0,0,.35);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+  }
+}
+
+.cm-userbox {
+    border-radius: 1vw;
+    border: solid rgb(97, 94, 94) 0.1vw;
+    position: absolute;
+    bottom: 0;
+    background-color: rgb(12, 12, 12);
+    width: 100%;
+
+}
+/* si un style cible le premier lien, on le remet par défaut */
+
+.cm-link:focus{
+  outline: none;
+  box-shadow: 0 0 0 0 rgba(0,0,0,0);
+}
+.cm-sidebar{
+  width: var(--sb-w);
+  flex: 0 0 var(--sb-w);
+  transition: width 1s cubic-bezier(.25,.8,.25,1),
+              flex-basis 1s cubic-bezier(.25,.8,.25,1),
+              transform .25s ease;
+}
+
+.cm-sidebar.collapsed{
+  width: var(--sb-w-collapsed);
+  flex-basis: var(--sb-w-collapsed);
+}
+@media (max-width: 960px){
+  .cm-sidebar{
+    width: var(--sb-w);    /* modifie la largeur du tiroir mobile */
+    flex-basis: var(--sb-w);
+  }
+}
+.cm-sidebar{ overflow:hidden; 
+    border-radius: 0.5vw;
+    height: 80vh;
+    margin-top: 1.2vw;
+}
+.cm-side-toggle{
+   margin-right: 0.2vw;
+   margin-top: 0.5vw;
+ 
+}

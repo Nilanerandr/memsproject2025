@@ -1,0 +1,79 @@
+/* Wrapper pour l'input photo */
+.am-photo-wrapper {
+  position: relative;
+}
+
+/* Cacher l'input file natif */
+.am-input-file {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+/* Style du label comme bouton */
+.am-file-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #f3f4f6;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.am-file-label:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.am-file-label i {
+  font-size: 18px;
+}
+
+/* Prévisualisation de la photo */
+.am-photo-preview {
+  position: relative;
+  margin-top: 12px;
+  width: 100%;
+  max-width: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.am-photo-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Bouton pour supprimer la photo */
+.am-photo-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 18px;
+}
+
+.am-photo-remove:hover {
+  background: rgba(220, 38, 38, 1);
+  transform: scale(1.1);
+}
