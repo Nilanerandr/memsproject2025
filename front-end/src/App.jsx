@@ -30,7 +30,7 @@ function App() {
       }
 
       const data = await getpaymentbyid(id_user);
-      console.log("✅ Paiements récupérés:", data);
+      // console.log("✅ Paiements récupérés:", data);
 
       if (data && Array.isArray(data.paiements)) {
         const nonValides = data.paiements.filter(

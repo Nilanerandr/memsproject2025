@@ -12,6 +12,7 @@ import payementRoutes from './routes/Payementroutes.js';
 import esp32Routes from './routes/ESP32routes.js';
 import prixRoutes from './routes/PrixparminuteRoutes.js';
 import deviceOwnerRoutes from './routes/Owneroutes.js';
+import consommationroutes from './routes/consopcroute.js'
 // Import MQTT (démarre la connexion)
 import './config/mqtt.js';
 
@@ -68,7 +69,7 @@ app.use('/api', payementRoutes);
 app.use('/api', esp32Routes);
 app.use('/api', prixRoutes);
 app.use('/api', deviceOwnerRoutes);
-
+app.use('/api', consommationroutes);
 // ========== SOCKET.IO ==========
 
 io.on('connection', (socket) => {
