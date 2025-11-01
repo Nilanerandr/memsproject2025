@@ -171,3 +171,13 @@
       0 0 40px rgba(0, 170, 255, 0.5);
   }
 }
+.notif{
+  font-size: 1vw;
+  height: 1.5vw;
+  width: 1.6vw;
+  border-radius: 100%;
+  background: red;
+  color: white;
+ text-align: center;
+  border :none
+}
