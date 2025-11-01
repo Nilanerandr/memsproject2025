@@ -1,0 +1,113 @@
+/* succes.css */
+
+/* Conteneur positionné en bas à gauche, largeur auto limitée au viewport */
+.st__container {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 1000;
+  opacity: 0;
+  transform: translateX(-8px) translateY(8px);
+  transition: transform 240ms ease, opacity 240ms ease;
+  width: max-content;           /* s'adapte au contenu */
+  max-width: 92vw;              /* ne dépasse pas l'écran */
+  pointer-events: none;         /* ne bloque pas les clics derrière */
+}
+
+/* Apparition */
+.st__container.st__visible {
+  opacity: 1;
+  transform: translateX(0) translateY(0);
+}
+
+/* Carte du toast (thème sombre) */
+.st__toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: nowrap;            /* tout sur une seule ligne */
+  background: #0b1220;
+  color: #e5e7eb;
+  border: 1px solid #1f2a37;
+  border-radius: 10px;
+  padding: 0.75rem 1rem 0.5rem 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  pointer-events: auto;
+}
+
+/* Icône plus grande et centrée */
+.st__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+.iconrs {
+  width: 22px;                 /* renforce la taille du SVG */
+  height: 22px;
+  color: #22c55e;
+}
+
+/* Texte: une seule ligne, aucune troncature */
+.st__text {
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  white-space: nowrap;          /* pas de retour à la ligne */
+  overflow: visible;            /* pas de masquage */
+  text-overflow: clip;          /* pas d’ellipsis */
+  flex: 0 1 auto;               /* laisse la ligne respirer */
+}
+
+/* Barre de progression (se vide de 100% à 0) */
+.st__progress {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  margin-top: 0.5rem;
+  background: transparent;
+  overflow: hidden;
+}
+.st__progress::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e 0%, #16a34a 100%);
+  transform-origin: left;
+  transform: scaleX(1);
+  animation: st__shrink var(--st-duration, 3000ms) linear forwards;
+}
+
+/* Animation */
+@keyframes st__shrink {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* Accessibilité: réduire les animations à la demande */
+@media (prefers-reduced-motion: reduce) {
+  .st__container { transition: none; }
+  .st__progress::before { animation: none; }
+}
+
+/* Pause de la barre si survol */
+.st__toast:hover .st__progress::before {
+  animation-play-state: paused;
+}
+
+/* Petits écrans */
+@media (max-width: 420px) {
+  .st__container {
+    left: 0.75rem;
+    bottom: 0.75rem;
+  }
+  .iconrs {
+    width: 20px;
+    height: 20px;
+  }
+  .st__text {
+    font-size: 0.92rem;
+  }
+}

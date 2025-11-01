@@ -3,7 +3,7 @@ import "remixicon/fonts/remixicon.css";
 import "./Login.css"; // même CSS partagé
 import { LoginUser } from "../../api/apiregisterandlogin.js";
 
-export default function LoginModal({ open, onClose }) {
+export default function LoginModal({ open, onClose ,onSuccess}) {
   const dialogRef = useRef(null);
   const firstInputRef = useRef(null);
   const [show, setShow] = useState(false);
@@ -35,7 +35,9 @@ export default function LoginModal({ open, onClose }) {
       localStorage.setItem("token", token);
       localStorage.setItem("id_user", user.id_user);
       // console.log("reponse", userResponse);
-      alert("Login réussi !");
+      // alert("Login réussi !");
+      // 🔹 Déclenche le toast de succès côté parent
+      onSuccess?.("Connexion réussie");
       onClose?.();
     } catch (err) {
       console.error(err);

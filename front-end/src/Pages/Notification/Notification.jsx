@@ -12,6 +12,7 @@ import { getpaymentbyid, validerpayment } from "../../api/apipayment.js";
 
 export default function HistoriqueNotification() {
   const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true); // 👈 indique si les données sont en chargement
 
   // Charger les paiements de l'utilisateur connecté
   useEffect(() => {
@@ -21,8 +22,6 @@ export default function HistoriqueNotification() {
         if (!id_user) return console.error("Aucun id_user dans le localStorage");
 
         const data = await getpaymentbyid(id_user);
-        console.log("✅ Paiements récupérés:", data);
-
         const paiements = Array.isArray(data.paiements) ? data.paiements : [];
 
         const formatted = paiements.map((p) => ({
@@ -37,9 +36,13 @@ export default function HistoriqueNotification() {
           valide: p.validation_du_payement === 1,
         }));
 
-        setRows(formatted);
+        setTimeout(() => {
+          setRows(formatted);
+          setLoading(false);
+        }, 1200); // 👈 petit délai pour un effet plus visible
       } catch (error) {
         console.error("❌ Erreur lors du chargement des paiements:", error);
+        setLoading(false);
       }
     };
 
@@ -60,6 +63,8 @@ export default function HistoriqueNotification() {
     }
   };
 
+  const shimmerCell = <div className="shimmer-cell"></div>; // 👈 effet mirage dans la cellule
+
   const columns = [
     {
       field: "dateDepart",
@@ -70,6 +75,7 @@ export default function HistoriqueNotification() {
           <FaCalendarAlt /> Date de départ
         </div>
       ),
+      renderCell: (params) => (loading ? shimmerCell : params.value),
     },
     {
       field: "heureDepart",
@@ -80,6 +86,7 @@ export default function HistoriqueNotification() {
           <FaClock /> Heure de départ
         </div>
       ),
+      renderCell: (params) => (loading ? shimmerCell : params.value),
     },
     {
       field: "tempsPasse",
@@ -90,6 +97,7 @@ export default function HistoriqueNotification() {
           <FaHourglassHalf /> Temps passé
         </div>
       ),
+      renderCell: (params) => (loading ? shimmerCell : params.value),
     },
     {
       field: "prix",
@@ -100,9 +108,8 @@ export default function HistoriqueNotification() {
           <FaMoneyBillWave /> Prix
         </div>
       ),
-      renderCell: (params) => (
-        <span className="prix-cell">{params.value}</span>
-      ),
+      renderCell: (params) =>
+        loading ? shimmerCell : <span className="prix-cell">{params.value}</span>,
     },
     {
       field: "valide",
@@ -113,15 +120,18 @@ export default function HistoriqueNotification() {
           <FaCheckCircle /> Validation
         </div>
       ),
-      renderCell: (params) => (
-        <button
-          className={`btn-valide ${params.row.valide ? "valide" : ""}`}
-          onClick={() => handleValidation(params.row.id)}
-          disabled={params.row.valide}
-        >
-          {params.row.valide ? "Validé" : "Valider"}
-        </button>
-      ),
+      renderCell: (params) =>
+        loading ? (
+          shimmerCell
+        ) : (
+          <button
+            className={`btn-valide ${params.row.valide ? "valide" : ""}`}
+            onClick={() => handleValidation(params.row.id)}
+            disabled={params.row.valide}
+          >
+            {params.row.valide ? "Validé" : "Valider"}
+          </button>
+        ),
     },
   ];
 
@@ -134,7 +144,7 @@ export default function HistoriqueNotification() {
 
       <div className="data-grid-container">
         <DataGrid
-          rows={rows}
+          rows={rows.length > 0 ? rows : Array(5).fill({ id: Math.random() })} // 👈 garde des lignes fictives si loading
           columns={columns}
           pagination
           pageSize={5}
@@ -149,7 +159,7 @@ export default function HistoriqueNotification() {
             "& .MuiDataGrid-cell": { borderColor: "#2a2a2a" },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#1a1a1a !important",
-              color: "#0c0b0bff",
+              color: "#0f0f0fff",
               borderBottom: "1px solid #2b2b2b",
               fontWeight: "600",
             },

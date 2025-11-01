@@ -5,7 +5,7 @@ import "./register.css";
 import { registerUser } from "../../api/apiregisterandlogin.js";
 import { createDeviceLink } from "../../api/apiowner.js";
 
-export default function RegisterModal({ open, onClose }) {
+export default function RegisterModal({ open, onClose ,onSuccess}) {
   const firstInputRef = useRef(null);
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
@@ -67,7 +67,8 @@ export default function RegisterModal({ open, onClose }) {
     // 3️⃣ Lier le device ESP32 (JSON simple)
     await createDeviceLink({ nom_esp32: formData.get('nom_esp32') });
 
-    alert("Inscription réussie et ESP32 lié !");
+    // alert("Inscription réussie et ESP32 lié !");
+    onSuccess?.("Inscription réussie");
     onClose?.();
   } catch (err) {
     console.error(err);
