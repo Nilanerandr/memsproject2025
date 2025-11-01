@@ -63,7 +63,7 @@ export default function RegisterModal({ open, onClose }) {
 
     // 2️⃣ Stocker le token
     localStorage.setItem('token', token);
-
+     localStorage.setItem("id_user", user.id_user);
     // 3️⃣ Lier le device ESP32 (JSON simple)
     await createDeviceLink({ nom_esp32: formData.get('nom_esp32') });
 

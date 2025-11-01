@@ -31,9 +31,10 @@ export default function LoginModal({ open, onClose }) {
       const userResponse = await LoginUser({ email, password });
 
       // 🔹 Stocker le token
-      const { token } = userResponse;
+      const { token, user } = userResponse;
       localStorage.setItem("token", token);
-
+      localStorage.setItem("id_user", user.id_user);
+      // console.log("reponse", userResponse);
       alert("Login réussi !");
       onClose?.();
     } catch (err) {
