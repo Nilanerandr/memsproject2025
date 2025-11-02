@@ -181,3 +181,56 @@
  text-align: center;
   border :none
 }
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.473);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #080808fd;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0.1vw 0vw 0.2vw black;
+  
+}
+
+.modal-content h3 {
+  margin: 1rem 0 0.5rem 0;
+}
+
+.modal-content p {
+  margin-bottom: 1.5rem;
+}
+
+.btn-close {
+  background-color: #2b5a8f;
+  margin-top: 1vw;
+  color: #212c5f;
+  padding: 0.5rem 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(35, 87, 146, 0.8), 0 0 20px rgba(22, 62, 107, 0.5);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  transition: 0.2s;
+}
+
+.btn-close:hover {
+  /* box-shadow: 0 0 15px rgba(22, 62, 107, 1), 0 0 25px rgba(22, 62, 107, 0.7); */
+  transform: translateY(-2px);
+  transition: 0.2s;
+}

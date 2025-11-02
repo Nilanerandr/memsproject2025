@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
 import {
   FaHome,
   FaChartBar,
@@ -7,6 +7,7 @@ import {
   FaBars,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { RiErrorWarningLine } from "react-icons/ri"; 
 import { getpaymentbyid } from "./api/apipayment";
 import "./navbar.css";
 import ProtectedRoute from "./Protectedroutes";
@@ -18,20 +19,18 @@ import Hyperspeed from "./BACKGROUND/Hyperspeed";
 function App() {
   const [openMenu, setOpenMenu] = useState(false);
   const [notifCount, setNotifCount] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate(); // 🔹 Hook pour navigation SPA
 
-  // 🔹 Fonction pour récupérer les paiements non validés
   const fetchUnvalidatedPayments = async () => {
     try {
       const id_user = localStorage.getItem("id_user");
       if (!id_user) {
-        console.warn("⚠️ Aucun id_user trouvé dans le localStorage");
         setNotifCount(0);
         return;
       }
 
       const data = await getpaymentbyid(id_user);
-      // console.log("✅ Paiements récupérés:", data);
-
       if (data && Array.isArray(data.paiements)) {
         const nonValides = data.paiements.filter(
           (p) => Number(p.validation_du_payement) === 0
@@ -41,12 +40,11 @@ function App() {
         setNotifCount(0);
       }
     } catch (error) {
-      console.error("❌ Erreur lors du chargement des paiements:", error);
+      console.error("Erreur lors du chargement des paiements:", error);
       setNotifCount(0);
     }
   };
 
-  // 🔹 Rafraîchissement toutes les 5 secondes
   useEffect(() => {
     fetchUnvalidatedPayments();
     const interval = setInterval(fetchUnvalidatedPayments, 5000);
@@ -57,98 +55,129 @@ function App() {
     localStorage.removeItem("token");
     localStorage.removeItem("id_user");
     setOpenMenu(false);
-    window.location.href = "/";
+    navigate("/"); // 🔹 navigation SPA
   };
 
   const toggleMenu = () => setOpenMenu((prev) => !prev);
 
+  const checkAuthAndNavigate = (path) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setShowModal(true);
+      return;
+    }
+    navigate(path); // 🔹 navigation SPA
+  };
+
   return (
-    <Router>
+    <div
+      style={{
+        position: "relative",
+        height: "100vh",
+        overflow: "hidden",
+        background: "radial-gradient(circle at center, #0c1e42ff, #000000)",
+      }}
+    >
+      <Hyperspeed />
+
       <div
         style={{
-          position: "relative",
-          height: "100vh",
-          overflow: "hidden",
-          background: "radial-gradient(circle at center, #0c1e42ff, #000000)",
+          position: "absolute",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
-        {/* <Hyperspeed /> */}
+        <div className="header">
+          <div className="imgdiv">
+            <img src="/images/img1.jpg" alt="" className="img1" />
+          </div>
+          <h2 className="title">CyberManager</h2>
+        </div>
 
-        <div
-          style={{
-            position: "absolute",
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div className="header">
-            <div className="imgdiv">
-              <img src="/images/img1.jpg" alt="" className="img1" />
-            </div>
-            <h2 className="title">CyberManager</h2>
+        <nav className="navbar">
+          <Link to="/" className="nav-item">
+            <FaHome className="nav-icon" />
+            <span>Accueil</span>
+          </Link>
+
+          <div
+            className="nav-item"
+            onClick={() => checkAuthAndNavigate("/dashboard")}
+            style={{ cursor: "pointer" }}
+          >
+            <FaChartBar className="nav-icon" />
+            <span>Dashboard</span>
           </div>
 
-          <nav className="navbar">
-            <Link to="/" className="nav-item">
-              <FaHome className="nav-icon" />
-              <span>Accueil</span>
-            </Link>
+          <div
+            className="nav-item"
+            onClick={() => checkAuthAndNavigate("/notifications")}
+            style={{ cursor: "pointer", position: "relative" }}
+          >
+            {notifCount > 0 && <div className="notif">{notifCount}</div>}
+            <FaBell className="nav-icon" />
+            <span>Notification</span>
+          </div>
 
-            <Link to="/dashboard" className="nav-item">
-              <FaChartBar className="nav-icon" />
-              <span>Dashboard</span>
-            </Link>
-
-            <Link to="/notifications" className="nav-item">
-              {/* 🔹 Affiche la pastille seulement s’il y a des paiements non validés */}
-              {notifCount > 0 && (
-                <div className="notif">{notifCount}</div>
-              )}
-              <FaBell className="nav-icon" />
-              <span>Notification</span>
-            </Link>
-
-            <div className="nav-item menu" onClick={toggleMenu}>
-              <FaBars className="nav-icon" />
-              <span>Menu</span>
-              {openMenu && (
-                <div className="submenu">
-                  <div className="submenu-item" onClick={handleLogout}>
-                    <FaSignOutAlt className="submenu-icon" />
-                    <span>Logout</span>
-                  </div>
+          <div className="nav-item menu" onClick={toggleMenu}>
+            <FaBars className="nav-icon" />
+            <span>Menu</span>
+            {openMenu && (
+              <div className="submenu">
+                <div className="submenu-item" onClick={handleLogout}>
+                  <FaSignOutAlt className="submenu-icon" />
+                  <span>Logout</span>
                 </div>
-              )}
-            </div>
-          </nav>
-        </div>
-
-        {/* 🔹 Routes */}
-        <div style={{ position: "relative", zIndex: 5 }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/notifications"
-              element={
-                <ProtectedRoute>
-                  <HistoriqueNotification />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </div>
+              </div>
+            )}
+          </div>
+        </nav>
       </div>
-    </Router>
+
+      {/* 🔹 Routes */}
+      <div style={{ position: "relative", zIndex: 5 }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <ProtectedRoute>
+                <HistoriqueNotification />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
+
+      {/* 🔹 Modal connexion requise */}
+      {showModal && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <RiErrorWarningLine size={40} color="#ff4d4f" />
+            <h3>Connexion requise</h3>
+            <button className="btn-close" onClick={() => setShowModal(false)}>
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
-export default App;
+export default function AppWrapper() {
+  return (
+    <Router>
+      <App />
+    </Router>
+  );
+}
