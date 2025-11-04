@@ -205,7 +205,7 @@ export default function RevenueBar() {
 /* Utilitaire de calcul des barres */
 function useBar(values){
   const w = 980, h = 360;
-  const padL = 56, padR = 20, padT = 26, padB = 44;
+  const padL = 56, padR = 60, padT = 26, padB = 44;
   const innerW = w - padL - padR;
   const innerH = h - padT - padB;
 

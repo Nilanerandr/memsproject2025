@@ -152,7 +152,7 @@ export default function PowerChart() {
               {yTicks.map((t,i)=>(<g key={i}>
                 <line x1={view.padL} x2={view.w - view.padR} y1={scaleY(t)} y2={scaleY(t)} className="pc-gridline"/>
                 <text x={view.padL - 8} y={scaleY(t)} className="pc-y" dominantBaseline="middle">
-                  {t.toLocaleString("fr-FR")} kW
+                  {t.toLocaleString("fr-FR")} 
                 </text>
               </g>))}
             </g>
@@ -169,7 +169,7 @@ export default function PowerChart() {
               <g transform={`translate(${hover.x + 10}, ${hover.y - 28})`} className="pc-tip">
                 <rect rx="8" ry="8" width="130" height="44"/>
                 <text x="10" y="18" className="pc-tip-title">{MONTHS[hover.i]} {year}</text>
-                <text x="10" y="34" className="pc-tip-value">{hover.val.toLocaleString("fr-FR")} kW</text>
+                <text x="10" y="34" className="pc-tip-value">{hover.val.toLocaleString("fr-FR")} wh</text>
               </g>
             </>}
           </svg>
@@ -178,15 +178,15 @@ export default function PowerChart() {
         <aside className="pc-side">
           <div className="pc-mini glass">
             <span className="pc-mini-title">Somme annuelle</span>
-            <strong className="pc-mini-value">{sum.toLocaleString("fr-FR")} kW</strong>
+            <strong className="pc-mini-value">{sum.toLocaleString("fr-FR")} W</strong>
           </div>
           <div className="pc-mini glass">
             <span className="pc-mini-title">Pic mensuel</span>
-            <strong className="pc-mini-value">{max.toLocaleString("fr-FR")} kW</strong>
+            <strong className="pc-mini-value">{max.toLocaleString("fr-FR")} W</strong>
           </div>
           <div className="pc-mini glass">
             <span className="pc-mini-title">Moyenne</span>
-            <strong className="pc-mini-value">{avg.toLocaleString("fr-FR")} kW</strong>
+            <strong className="pc-mini-value">{avg.toLocaleString("fr-FR")} W</strong>
           </div>
         </aside>
       </section>
@@ -199,7 +199,7 @@ export default function PowerChart() {
 /* Hook utilitaire pour calculs de tracé */
 function useChart(series){
   const w=980,h=360;
-  const padL=56,padR=20,padT=26,padB=44;
+  const padL = 60, padR = 80,padT=26,padB=44;
   const innerW=w-padL-padR, innerH=h-padT-padB;
   const maxVal=Math.max(...series, 600);
   const niceMax=niceCeil(maxVal);

@@ -218,3 +218,13 @@
     font-size: 15px;
   }
 }
+@media  (max-width:760px){
+  .coffee{
+  font-size: 7vw;
+  color: white;
+  margin-right: 3vw;
+}
+.logo-container{
+  font-size: 5vw;
+}
+}

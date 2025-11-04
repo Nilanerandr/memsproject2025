@@ -98,7 +98,7 @@ function App() {
         <nav className="navbar">
           <Link to="/" className="nav-item">
             <FaHome className="nav-icon" />
-            <span>Accueil</span>
+            <span className="spnav">Accueil</span>
           </Link>
 
           <div
@@ -107,7 +107,7 @@ function App() {
             style={{ cursor: "pointer" }}
           >
             <FaChartBar className="nav-icon" />
-            <span>Dashboard</span>
+            <span  className="spnav">Dashboard</span>
           </div>
 
           <div
@@ -117,17 +117,17 @@ function App() {
           >
             {notifCount > 0 && <div className="notif">{notifCount}</div>}
             <FaBell className="nav-icon" />
-            <span>Notification</span>
+            <span  className="spnav">Notification</span>
           </div>
 
           <div className="nav-item menu" onClick={toggleMenu}>
             <FaBars className="nav-icon" />
-            <span>Menu</span>
+            <span  className="spnav">Menu</span>
             {openMenu && (
               <div className="submenu">
                 <div className="submenu-item" onClick={handleLogout}>
                   <FaSignOutAlt className="submenu-icon" />
-                  <span>Logout</span>
+                  <span  className="spnav">Logout</span>
                 </div>
               </div>
             )}

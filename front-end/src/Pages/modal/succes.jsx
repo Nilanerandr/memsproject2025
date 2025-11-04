@@ -27,7 +27,7 @@ function SuccessToast({
         <span className="st__icon" aria-hidden="true">
           <FaCheckCircle className="iconrs" size={22} />
         </span>
-        <span className="st__text">{message}</span>
+        <span className="st__texts">{message}</span>
         <div className="st__progress" />
       </div>
     </div>

@@ -65,7 +65,7 @@ const Home = () => {
         buttonBgColor="#111"
         buttonTextColor="#fff"
         ease="power3.out"
-      />
+       className='crn'/>
 
       <div className="home-container">
         <div className="welcome-banner">

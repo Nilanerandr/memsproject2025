@@ -50,7 +50,7 @@
 }
 
 /* Texte: une seule ligne, aucune troncature */
-.st__text {
+.st__texts {
   font-size: 0.98rem;
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -111,3 +111,4 @@
     font-size: 0.92rem;
   }
 }
+@media  (max-width:760px){.st__container{bottom: 20vh;}}

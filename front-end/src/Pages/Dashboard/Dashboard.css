@@ -10,7 +10,8 @@
   --shadow:0 10px 28px rgba(0,0,0,.35);
   --glow:0 0 16px rgba(58,180,255,.35), 0 0 24px rgba(122,92,255,.22);
    --sb-w: 264px;          /* largeur sidebar ouverte */
-  --sb-w-collapsed: 5.2%; /* largeur sidebar réduite */
+  --sb-w-collapsed: 5.2%; 
+   
 }
 
 *{box-sizing:border-box}
@@ -23,7 +24,8 @@ body{
 }
 
 .dash-wrap{display:flex;min-height:100dvh;margin-top: 8vw;}
-.cm-stack{flex:1;display:flex;flex-direction:column;min-width:0}
+.cm-stack{flex:1;display:flex;flex-direction:column;min-width:0;
+}
 
 /* SIDEBAR */
 .cm-sidebar{
@@ -131,7 +133,8 @@ body{
 
 /* MAIN */
 .cm-main{flex:1;display:flex;flex-direction:column;min-width:0}
-.cm-content{padding:16px}
+.cm-content{padding:16px;
+background-color:none;}
 .cm-card{
   background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);
   border:1px solid rgba(255,255,255,.06);
@@ -210,4 +213,35 @@ body{
    margin-right: 0.2vw;
    margin-top: 0.5vw;
  
+}
+@media  (max-width:760px){
+ .cm-content{
+  /* background-color: red; */
+  height: 70vh;
+  overflow: hidden;
+  overflow-y: scroll;
+ }
+ .cm-stack{
+  /* background-color: red; */
+  overflow: hidden;
+  height: 80vh;
+  /* top: 30vw; */
+  margin-top: 8vh;
+ }
+ .cm-sidebar{
+  margin-top: 11vh;
+  border-radius: 3vw;
+ 
+ }
+ .cm-brand{
+  border-radius: 3vw ;
+ }
+
+:root{
+  --sb-w-collapsed: 16.2%; 
+}
+.cm-menu{
+  margin-left: 82vw;
+}
+
 }

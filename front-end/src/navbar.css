@@ -234,3 +234,52 @@
   transform: translateY(-2px);
   transition: 0.2s;
 }
+@media  (max-width:760px){
+  .spnav{
+    display:none;
+  }
+  
+  .nav-icon{
+    font-size: 5vw;
+  }
+  .navbar{
+    width: 100%;
+    top: 90%;
+    /* background-color: #0072ff; */
+    height: 8vh;
+    left: 0;
+    position: fixed;
+    z-index: 100000!important;
+  }
+  /* --- Effet au survol --- */
+  .nav-item {
+    text-align: center;
+  }
+.nav-item:hover {
+  background-color: #000000;
+  color: white;
+  height: 8vw;
+  width: 8vw;
+}
+.img1{
+  height: 12vw;
+  width: 12vw;
+}
+.title{
+  font-size: 5vw;
+}
+.submenu-icon {
+  font-size: 5vw;
+}
+.submenu-item:hover {
+  background-color: #070000;
+  color: white;
+  border-radius: 0.5vw;
+}
+.notif{
+  height: 5vw;
+  width:5vw;
+  font-size: 3vw;
+  padding-top:0.5vw
+}
+}
