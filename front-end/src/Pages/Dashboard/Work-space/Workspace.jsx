@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import "remixicon/fonts/remixicon.css"; 
 import "./Workspace.css";
-
+import { updatePrix } from "../../../api/apiupdateprix";
 export default function ComputerGrid({ machines = [], onRefreshPower, onSavePricePerMinute }) {
   const [power, setPower] = useState(() =>
     Object.fromEntries(machines.map(m => [m.id, m.watts || 0]))
@@ -75,12 +75,24 @@ export default function ComputerGrid({ machines = [], onRefreshPower, onSavePric
 
   const handleOpenPrice = () => setIsPriceOpen(true);
   const handleClosePrice = () => setIsPriceOpen(false);
-  const handleSavePrice = () => {
-    const num = Number(priceValue);
-    if (!Number.isFinite(num) || num < 0) return;
-    onSavePricePerMinute?.(num);
+ const handleSavePrice = async () => {
+  const num = Number(priceValue);
+
+  if (!Number.isFinite(num) || num < 0) return;
+
+  const id_user = localStorage.getItem("id_user");
+
+  try {
+    await updatePrix(id_user, num);        // <-- envoie au backend
+    onSavePricePerMinute?.(num);           // <-- update frontend
     setIsPriceOpen(false);
-  };
+    // console.log("prix mis a jour");
+    
+  } catch (error) {
+    console.error("Erreur update prix :", error);
+  }
+};
+
 
   return (
     <>
@@ -170,16 +182,42 @@ export default function ComputerGrid({ machines = [], onRefreshPower, onSavePric
             <header className="cm-modal__head">
               <i className="ri-price-tag-3-fill cm-modal__icon" aria-hidden="true" />
               <h4 id="cm-price-title" className="cm-modal__title">
-                Définir le prix par minute
+                Définir heure demarrage /heure d extinction/ prix par minute
               </h4>
             </header>
 
             <p id="cm-price-desc" className="cm-modal__desc">
-              Entrer un montant par minute; utiliser un nombre décimal si nécessaire.
+              le prix parminute par defaut est de 10Ar/min
             </p>
 
             <label className="cm-field">
-              <span className="cm-field__label">Prix/minute</span>
+             
+              <label className="cm-field">
+  <span className="cm-field__label">Heure d’activation</span>
+  <div className="cm-field__control">
+    <i className="ri-time-line" aria-hidden="true" />
+    <input
+      type="time"
+      className="cm-input"
+      
+      
+    />
+  </div>
+</label>
+
+<label className="cm-field">
+  <span className="cm-field__label">Heure d’extinction</span>
+  <div className="cm-field__control">
+    <i className="ri-time-line" aria-hidden="true" />
+    <input
+      type="time"
+      className="cm-input"
+     
+      
+    />
+  </div>
+</label>
+ <span className="cm-field__label">Prix/minute</span>
               <div className="cm-field__control">
                 <i className="ri-money-dollar-circle-line" aria-hidden="true" />
                 <input

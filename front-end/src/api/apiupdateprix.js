@@ -14,12 +14,17 @@ const axiosInstance = axios.create({
 
  export const updatePrix = async (id_user, newPrix) => {
   try {
-    const response = await axiosInstance.put(`/prixparminute/${id_user}`, {});
+    const response = await axiosInstance.put(
+      `/prixparminute/${id_user}`,
+      { value: newPrix }  // <-- le nom que le backend attend
+    );
     return response.data;
   } catch (error) {
     console.error('Erreur lors de la mise à jour du prix par minute :', error);
     throw error;
-  }}
+  }
+};
+
 
 
 
