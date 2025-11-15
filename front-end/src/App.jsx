@@ -78,7 +78,7 @@ function App() {
         background: "radial-gradient(circle at center, #0c1e42ff, #000000)",
       }}
     >
-      <Hyperspeed />
+      {/* <Hyperspeed /> */}
 
       <div
         style={{

@@ -7,6 +7,57 @@ import * as ConsModel from '../models/Consommationpc.js';
 
 // Puissance moyenne (W) configurable via .env, sinon 60W par défaut
 const PUISSANCE_MOYENNE_W = Number(process.env.PC_POWER_W || 60);
+// controllers/esp32TimeController.js
+let ioInstance; // Pour stocker l'instance Socket.IO si nécessaire
+// let ioInstance; // Pour stocker l'instance Socket.IO
+let mqttClient; // Pour stocker l'instance MQTT si nécessaire
+
+// Initialisation de Socket.IO
+export const setSocketIo = (io) => {
+  ioInstance = io;
+};
+
+// Initialisation du client MQTT
+export const setMqttClient = (client) => {
+  mqttClient = client;
+};
+
+// Fonction pour recevoir les horaires depuis le frontend
+export const setHeureRelais = async (req, res) => {
+  try {
+    const { heureOn, minuteOn, heureOff, minuteOff, nom_esp32 } = req.body;
+
+    if (
+      typeof heureOn !== 'number' || typeof minuteOn !== 'number' ||
+      typeof heureOff !== 'number' || typeof minuteOff !== 'number' ||
+      !nom_esp32
+    ) {
+      return res.status(400).json({ message: 'Données invalides' });
+    }
+
+    // --- Envoi via WebSocket ---
+    if (ioInstance) {
+      ioInstance.to(nom_esp32).emit('setHeureRelais', { heureOn, minuteOn, heureOff, minuteOff });
+      console.log(`🕒 WebSocket → ${nom_esp32}: On ${heureOn}:${minuteOn}, Off ${heureOff}:${minuteOff}`);
+    }
+
+    // --- Envoi via MQTT ---
+    if (mqttClient && mqttClient.connected) {
+      const mqttTopic = `esp32/cmd/${nom_esp32}`;
+      const payload = JSON.stringify({ heureOn, minuteOn, heureOff, minuteOff });
+      mqttClient.publish(mqttTopic, payload, { qos: 1 }, (err) => {
+        if (err) console.error('❌ Erreur MQTT:', err);
+        else console.log(`📡 MQTT → ${nom_esp32} sur ${mqttTopic}: ${payload}`);
+      });
+    }
+
+    return res.status(200).json({ message: 'Horaires envoyés avec succès' });
+  } catch (err) {
+    console.error('❌ Erreur setHeureRelais:', err.message);
+    return res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
 
 // Traiter les messages MQTT (ESP32 -> MQTT -> Backend)
 export const handleMqttMessage = async (topic, message) => {

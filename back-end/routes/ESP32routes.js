@@ -5,7 +5,8 @@ import {
   getLastDonnee,
   getAllDonnees,
   getSessionsActives,
-  getDonneeById
+  getDonneeById,
+  setHeureRelais
 } from '../controllers/Esp32controllers.js';
 
 const router = express.Router();
@@ -25,4 +26,6 @@ router.get('/donnees/actives', getSessionsActives);
 // Une donnée par ID (lecture directe)
 router.get('/donnees/:id_donnee', getDonneeById);
 
+// ⚡ Initialiser / mettre à jour les horaires du relais
+router.put('/relais/heure', setHeureRelais);
 export default router;
