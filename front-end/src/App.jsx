@@ -1,27 +1,25 @@
+// App.jsx
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from "react-router-dom";
-import {
-  FaHome,
-  FaChartBar,
-  FaBell,
-  FaBars,
-  FaSignOutAlt,
-} from "react-icons/fa";
-import { RiErrorWarningLine } from "react-icons/ri"; 
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { FaHome, FaChartBar, FaBell, FaBars, FaSignOutAlt } from "react-icons/fa";
+import { RiErrorWarningLine } from "react-icons/ri";
+
 import { getpaymentbyid } from "./api/apipayment";
 import "./navbar.css";
-import ProtectedRoute from "./Protectedroutes";
+import ProtectedRoute from "./Protectedroutes.jsx";
 import Home from "./Pages/HOME/Home";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import HistoriqueNotification from "./Pages/Notification/Notification";
 import Hyperspeed from "./BACKGROUND/Hyperspeed";
+import { useAuth } from "./AuthContext.jsx";
 
-function App() {
-  const [openMenu, setOpenMenu] = useState(false);
+export default function App() {
   const [notifCount, setNotifCount] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate(); // 🔹 Hook pour navigation SPA
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
+  // 🔹 Récupération paiements non validés
   const fetchUnvalidatedPayments = async () => {
     try {
       const id_user = localStorage.getItem("id_user");
@@ -29,12 +27,9 @@ function App() {
         setNotifCount(0);
         return;
       }
-
       const data = await getpaymentbyid(id_user);
       if (data && Array.isArray(data.paiements)) {
-        const nonValides = data.paiements.filter(
-          (p) => Number(p.validation_du_payement) === 0
-        );
+        const nonValides = data.paiements.filter(p => Number(p.validation_du_payement) === 0);
         setNotifCount(nonValides.length);
       } else {
         setNotifCount(0);
@@ -52,21 +47,17 @@ function App() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("id_user");
-    setOpenMenu(false);
-    navigate("/"); // 🔹 navigation SPA
+    logout();
+    navigate("/");
+    window.location.reload() // navigation SPA
   };
 
-  const toggleMenu = () => setOpenMenu((prev) => !prev);
-
   const checkAuthAndNavigate = (path) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    if (!isAuthenticated) {
       setShowModal(true);
       return;
     }
-    navigate(path); // 🔹 navigation SPA
+    navigate(path);
   };
 
   return (
@@ -80,14 +71,7 @@ function App() {
     >
       {/* <Hyperspeed /> */}
 
-      <div
-        style={{
-          position: "absolute",
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+      <div style={{ position: "absolute", width: "100%", display: "flex", justifyContent: "center" }}>
         <div className="header">
           <div className="imgdiv">
             <img src="/images/img1.jpg" alt="" className="img1" />
@@ -101,37 +85,29 @@ function App() {
             <span className="spnav">Accueil</span>
           </Link>
 
-          <div
-            className="nav-item"
-            onClick={() => checkAuthAndNavigate("/dashboard")}
-            style={{ cursor: "pointer" }}
-          >
+          <div className="nav-item" onClick={() => checkAuthAndNavigate("/dashboard")} style={{ cursor: "pointer" }}>
             <FaChartBar className="nav-icon" />
-            <span  className="spnav">Dashboard</span>
+            <span className="spnav">Dashboard</span>
           </div>
 
-          <div
-            className="nav-item"
-            onClick={() => checkAuthAndNavigate("/notifications")}
-            style={{ cursor: "pointer", position: "relative" }}
-          >
+          <div className="nav-item" onClick={() => checkAuthAndNavigate("/notifications")} style={{ cursor: "pointer", position: "relative" }}>
             {notifCount > 0 && <div className="notif">{notifCount}</div>}
             <FaBell className="nav-icon" />
-            <span  className="spnav">Notification</span>
+            <span className="spnav">Historique</span>
           </div>
 
-          <div className="nav-item menu" onClick={toggleMenu}>
-            <FaBars className="nav-icon" />
-            <span  className="spnav">Menu</span>
-            {openMenu && (
-              <div className="submenu">
-                <div className="submenu-item" onClick={handleLogout}>
-                  <FaSignOutAlt className="submenu-icon" />
-                  <span  className="spnav">Logout</span>
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Menu ou Logout */}
+          {!isAuthenticated ? (
+            <div className="nav-item" style={{ cursor: "default" }}>
+              <FaBars className="nav-icon" />
+              <span className="spnav">Menu</span>
+            </div>
+          ) : (
+            <div className="nav-item" onClick={handleLogout} style={{ cursor: "pointer" }}>
+              <FaSignOutAlt className="nav-icon" />
+              <span className="spnav">Logout</span>
+            </div>
+          )}
         </nav>
       </div>
 
@@ -139,22 +115,8 @@ function App() {
       <div style={{ position: "relative", zIndex: 5 }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/notifications"
-            element={
-              <ProtectedRoute>
-                <HistoriqueNotification />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/notifications" element={<ProtectedRoute><HistoriqueNotification /></ProtectedRoute>} />
         </Routes>
       </div>
 
@@ -164,20 +126,10 @@ function App() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <RiErrorWarningLine size={40} color="#ff4d4f" />
             <h3>Connexion requise</h3>
-            <button className="btn-close" onClick={() => setShowModal(false)}>
-              Fermer
-            </button>
+            <button className="btn-close" onClick={() => setShowModal(false)}>Fermer</button>
           </div>
         </div>
       )}
     </div>
-  );
-}
-
-export default function AppWrapper() {
-  return (
-    <Router>
-      <App />
-    </Router>
   );
 }

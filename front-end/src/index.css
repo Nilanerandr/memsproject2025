@@ -82,3 +82,16 @@ html body canvas {
   pointer-events: none !important;
   
 }
+/* @media  (max-width:760px){
+  html body{
+    height: auto;
+    overflow-y: auto;
+
+  }
+} */
+ html ,body{
+  height: 50%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding:0;}

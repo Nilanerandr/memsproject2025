@@ -1,6 +1,15 @@
 import axios from "axios";
 
-const API_BASE_URL = 'http://localhost:8080/api'; // change selon ton backend
+// Détection automatique de l'URL selon l'environnement
+const getApiUrl = () => {
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:8080/api';
+  } else {
+    return `http://${window.location.hostname}:8080/api`;
+  }
+};
+
+const API_BASE_URL = getApiUrl(); // ⬅️ Utiliser la détection automatique
 
 // Ajouter un header par défaut si tu utilises JWT
 const axiosInstance = axios.create({
@@ -11,8 +20,7 @@ const axiosInstance = axios.create({
   },
 });
 
-
- export const updatePrix = async (id_user, newPrix) => {
+export const updatePrix = async (id_user, newPrix) => {
   try {
     const response = await axiosInstance.put(
       `/prixparminute/${id_user}`,
@@ -24,12 +32,3 @@ const axiosInstance = axios.create({
     throw error;
   }
 };
-
-
-
-
-
-
-
-
-

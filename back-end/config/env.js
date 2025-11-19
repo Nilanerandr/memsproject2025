@@ -5,7 +5,7 @@ dotenv.config();
 // Serveur
 export const PORT = process.env.PORT || 8080;
 export const NODE_ENV = process.env.NODE_ENV || 'development';
-
+export const HOST = process.env.HOST || '0.0.0.0';
 // Base de données
 export const DB_HOST = process.env.DB_HOST || 'localhost';
 export const DB_USER = process.env.DB_USER || 'root';

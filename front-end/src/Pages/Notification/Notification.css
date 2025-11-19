@@ -111,3 +111,13 @@ body {
     background-position: 200% 0;
   }
 }
+@media  (max-width:760px){
+  .historique-wrapper {
+    margin-top: 20%;
+    padding: 0;
+  }
+  .data-grid-container{
+    width: 95vw;
+    margin-left: 0;
+  }
+}

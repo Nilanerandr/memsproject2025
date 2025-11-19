@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import "remixicon/fonts/remixicon.css"; 
 import "./Workspace.css";
 import { updatePrix } from "../../../api/apiupdateprix";
+import { updateHeureRelais } from "../../../api/apiHeureRelais";
 export default function ComputerGrid({ machines = [], onRefreshPower, onSavePricePerMinute }) {
   const [power, setPower] = useState(() =>
     Object.fromEntries(machines.map(m => [m.id, m.watts || 0]))
@@ -11,6 +12,14 @@ export default function ComputerGrid({ machines = [], onRefreshPower, onSavePric
   const [priceValue, setPriceValue] = useState("");
   const triggerRef = useRef(null);
   const inputRef = useRef(null);
+ const [errors, setErrors] = useState({
+  heureOn: "",
+  heureOff: "",
+  price: ""
+});
+
+ const [heureOn, setHeureOn] = useState("");
+const [heureOff, setHeureOff] = useState("");
 
   // Rafraîchit la puissance en temps réel
   useEffect(() => {
@@ -75,23 +84,100 @@ export default function ComputerGrid({ machines = [], onRefreshPower, onSavePric
 
   const handleOpenPrice = () => setIsPriceOpen(true);
   const handleClosePrice = () => setIsPriceOpen(false);
- const handleSavePrice = async () => {
-  const num = Number(priceValue);
+//  const handleSavePrice = async () => {
+//    const newErrors = { heureOn: "", heureOff: "", price: "" };
+//   let hasError = false;
 
+//   if (!heureOn) {
+//     newErrors.heureOn = "Veuillez remplir l'heure d'activation";
+//     hasError = true;
+//   }
+//   if (!heureOff) {
+//     newErrors.heureOff = "Veuillez remplir l'heure d'extinction";
+//     hasError = true;
+//   }
+//   if (!priceValue || Number(priceValue) < 0) {
+//     newErrors.price = "Veuillez entrer un prix valide";
+//     hasError = true;
+//   }
+
+//   setErrors(newErrors);
+
+//   if (hasError) return;
+//   const num = Number(priceValue);
+
+//   if (!Number.isFinite(num) || num < 0) return;
+
+//   const id_user = localStorage.getItem("id_user");
+
+//   try {
+
+//     // 1️⃣ ENREGISTRER LE PRIX (ton code existant)
+//     await updatePrix(id_user, num);
+//     onSavePricePerMinute?.(num);
+//    const [hOn, mOn] = heureOn.split(':').map(Number);
+//    const [hOff, mOff] = heureOff.split(':').map(Number);
+
+//     // 2️⃣ ENVOYER LES HEURES D’ACTIVATION / EXTINCTION AU BACKEND
+//     // await updateHeureRelais("esp32-1", heureOn, heureOff);
+//     // 2️⃣ Envoyer les heures au backend
+//   const response = await updateHeureRelais("esp32-1", hOn, mOn, hOff, mOff);
+
+//   // ✅ Afficher la réponse du backend
+//   console.log("Réponse backend setHeureRelais :", response.data);
+
+//     setIsPriceOpen(false);
+
+//   } catch (error) {
+//     console.error("Erreur update :", error);
+//   }
+// };
+const handleSavePrice = async () => {
+  const newErrors = { heureOn: "", heureOff: "", price: "" };
+  let hasError = false;
+
+  if (!heureOn) {
+    newErrors.heureOn = "Veuillez remplir l'heure d'activation";
+    hasError = true;
+  }
+  if (!heureOff) {
+    newErrors.heureOff = "Veuillez remplir l'heure d'extinction";
+    hasError = true;
+  }
+  if (!priceValue || Number(priceValue) < 0) {
+    newErrors.price = "Veuillez entrer un prix valide";
+    hasError = true;
+  }
+
+  setErrors(newErrors);
+  if (hasError) return;
+
+  const num = Number(priceValue);
   if (!Number.isFinite(num) || num < 0) return;
 
   const id_user = localStorage.getItem("id_user");
 
   try {
-    await updatePrix(id_user, num);        // <-- envoie au backend
-    onSavePricePerMinute?.(num);           // <-- update frontend
+    // 1️⃣ ENREGISTRER LE PRIX
+    await updatePrix(id_user, num);
+    onSavePricePerMinute?.(num);
+
+    // 2️⃣ Transformer les heures en format "HH:MM"
+    const heureOnStr = `${heureOn.split(":")[0].padStart(2, "0")}:${heureOn.split(":")[1].padStart(2, "0")}`;
+    const heureOffStr = `${heureOff.split(":")[0].padStart(2, "0")}:${heureOff.split(":")[1].padStart(2, "0")}`;
+
+    // 3️⃣ ENVOYER LES HEURES AU BACKEND
+    const response = await updateHeureRelais(heureOnStr, heureOffStr);
+
+    console.log("Réponse backend setHeureRelais :", response);
+
     setIsPriceOpen(false);
-    // console.log("prix mis a jour");
-    
   } catch (error) {
-    console.error("Erreur update prix :", error);
+    console.error("Erreur update :", error);
   }
 };
+
+
 
 
   return (
@@ -192,17 +278,19 @@ export default function ComputerGrid({ machines = [], onRefreshPower, onSavePric
 
             <label className="cm-field">
              
-              <label className="cm-field">
+           <label className="cm-field">
   <span className="cm-field__label">Heure d’activation</span>
   <div className="cm-field__control">
     <i className="ri-time-line" aria-hidden="true" />
     <input
       type="time"
       className="cm-input"
-      
-      
+      value={heureOn}
+      onChange={(e) => setHeureOn(e.target.value)}
+      required
     />
   </div>
+  {errors.heureOn && <span className="cm-error">{errors.heureOn}</span>}
 </label>
 
 <label className="cm-field">
@@ -212,12 +300,15 @@ export default function ComputerGrid({ machines = [], onRefreshPower, onSavePric
     <input
       type="time"
       className="cm-input"
-     
-      
+      value={heureOff}
+      onChange={(e) => setHeureOff(e.target.value)}
+      required
     />
   </div>
+  {errors.heureOff && <span className="cm-error">{errors.heureOff}</span>}
 </label>
- <span className="cm-field__label">Prix/minute</span>
+
+ <span className="cm-field__label">Prix/minute en Ar</span>
               <div className="cm-field__control">
                 <i className="ri-money-dollar-circle-line" aria-hidden="true" />
                 <input
@@ -227,11 +318,13 @@ export default function ComputerGrid({ machines = [], onRefreshPower, onSavePric
                   min="0"
                   inputMode="decimal"
                   className="cm-input"
-                  placeholder="ex. 10"
+                  placeholder="nombre entier "
                   value={priceValue}
                   onChange={(e) => setPriceValue(e.target.value)}
+                  required
                 />
               </div>
+               {errors.price && <span className="cm-error">{errors.price}</span>}
             </label>
 
             <div className="cm-modal__actions">

@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { PORT, CORS_ORIGIN } from './config/env.js';
+import { PORT, HOST, CORS_ORIGIN } from './config/env.js'; // ⬅️ Ajout de HOST
 
 // Import des routes
 import usersRoutes from './routes/UsersRoutes.js';
@@ -26,10 +26,13 @@ const app = express();
 // Créer le serveur HTTP
 const httpServer = createServer(app);
 
-// Créer Socket.IO
+// ⬅️ Convertir CORS_ORIGIN en tableau pour gérer plusieurs origines
+const corsOrigins = CORS_ORIGIN.split(',').map(origin => origin.trim());
+
+// Créer Socket.IO avec les origines multiples
 const io = new Server(httpServer, {
   cors: {
-    origin: CORS_ORIGIN,
+    origin: corsOrigins, // ⬅️ Utiliser le tableau d'origines
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
@@ -39,9 +42,9 @@ export { io };
 
 // ========== MIDDLEWARES ==========
 
-// CORS
+// CORS avec origines multiples
 app.use(cors({
-  origin: CORS_ORIGIN,
+  origin: corsOrigins, // ⬅️ Utiliser le tableau d'origines
   credentials: true
 }));
 
@@ -70,6 +73,7 @@ app.use('/api', esp32Routes);
 app.use('/api', prixRoutes);
 app.use('/api', deviceOwnerRoutes);
 app.use('/api', consommationroutes);
+
 // ========== SOCKET.IO ==========
 
 io.on('connection', (socket) => {
@@ -107,10 +111,12 @@ app.use((err, req, res, next) => {
 
 // ========== DÉMARRAGE DU SERVEUR ==========
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, HOST, () => { // ⬅️ Ajout de HOST comme paramètre
   console.log('=================================');
   console.log(`🚀 Serveur démarré sur le port ${PORT}`);
-  console.log(`📡 URL API: http://localhost:${PORT}`);
+  console.log(`🔌 Écoute sur: ${HOST}`); // ⬅️ Ajout
+  console.log(`📡 URL locale: http://localhost:${PORT}`);
+  console.log(`🌐 URL réseau: http://192.168.8.102:${PORT}`); // ⬅️ Ajout
   console.log(`🌐 Socket.IO prêt`);
   console.log(`📊 MQTT connecté`);
   console.log('=================================');
@@ -124,4 +130,3 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
-

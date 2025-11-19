@@ -77,3 +77,12 @@
   background: rgba(220, 38, 38, 1);
   transform: scale(1.1);
 }
+@media  (max-width:760px){
+  .registernmodal {
+    height: 80vh !important;
+    overflow: hidden !important;
+    overflow-y: scroll !important;
+    top: -10vw  !important;
+    /* background-color: rebeccapurple; */
+  }
+}

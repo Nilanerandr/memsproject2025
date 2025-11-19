@@ -44,13 +44,20 @@ export const setHeureRelais = async (req, res) => {
     // --- Envoi via MQTT ---
     if (mqttClient && mqttClient.connected) {
       const mqttTopic = `esp32/cmd/${nom_esp32}`;
-      const payload = JSON.stringify({ heureOn, minuteOn, heureOff, minuteOff });
+      // const payload = JSON.stringify({ heureOn, minuteOn, heureOff, minuteOff });
+      const payload = JSON.stringify({
+  heureOn: Number(heureOn),
+  minuteOn: Number(minuteOn),
+  heureOff: Number(heureOff),
+  minuteOff: Number(minuteOff),
+});
+
       mqttClient.publish(mqttTopic, payload, { qos: 1 }, (err) => {
         if (err) console.error('❌ Erreur MQTT:', err);
         else console.log(`📡 MQTT → ${nom_esp32} sur ${mqttTopic}: ${payload}`);
       });
     }
-
+   console.log(`✅ Horaires reçus pour ${nom_esp32}:`, { heureOn, minuteOn, heureOff, minuteOff });
     return res.status(200).json({ message: 'Horaires envoyés avec succès' });
   } catch (err) {
     console.error('❌ Erreur setHeureRelais:', err.message);

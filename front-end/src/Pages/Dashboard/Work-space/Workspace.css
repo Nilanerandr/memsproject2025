@@ -267,3 +267,9 @@
   .cm-modal__actions { flex-direction: column-reverse; }
   .cm-primaryBtn, .cm-secondaryBtn { width: 100%; justify-content: center; }
 }
+.cm-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 2px;
+  display: block;
+}
