@@ -74,17 +74,12 @@ export default function Utilisateurs() {
   // 🔹 Machines statiques à afficher si aucune donnée ne vient du backend
   const staticMachines = [
     {
-      id: "PC-STATIC-1",
-      active: false,
-      usedMinutes: 0,
-      watts: 0,
+      id: "Poste-1",
+      active: true,
+      usedMinutes: 1800,
+      watts: 45,
     },
-    {
-      id: "PC-STATIC-2",
-      active: false,
-      usedMinutes: 0,
-      watts: 0,
-    },
+    
   ];
 
   const [machines, setMachines] = useState(null); 

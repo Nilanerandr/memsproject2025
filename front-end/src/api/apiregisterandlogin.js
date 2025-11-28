@@ -22,15 +22,29 @@ const axiosInstance = axios.create({
   },
 });
 
+// export const registerUser = async (formData) => {
+//   try {
+//     const response = await axiosInstance.post('/register', formData); // laisse Axios gérer le Content-Type
+//     return response.data; 
+//   } catch (error) {
+//     console.error('Erreur registerUser :', error.response?.data || error.message);
+//     throw error;
+//   }
+// };
 export const registerUser = async (formData) => {
   try {
-    const response = await axiosInstance.post('/register', formData); // laisse Axios gérer le Content-Type
-    return response.data; 
+    const response = await axiosInstance.post('/register', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // obligatoire pour l'image
+      },
+    });
+    return response.data;
   } catch (error) {
     console.error('Erreur registerUser :', error.response?.data || error.message);
     throw error;
   }
 };
+
 
 export const LoginUser = async (data) => {
   try {
@@ -42,6 +56,19 @@ export const LoginUser = async (data) => {
     return response.data; // retourne la réponse du backend
   } catch (error) {
     console.error('Erreur loginUser :', error.response?.data || error.message);
+    throw error;
+  }
+};
+export const getUserProfile = async (id_user, token) => {
+  try {
+    const response = await axiosInstance.get(`/users/${id_user}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erreur getUserProfile :', error.response?.data || error.message);
     throw error;
   }
 };

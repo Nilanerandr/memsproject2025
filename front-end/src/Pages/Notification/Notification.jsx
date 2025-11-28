@@ -12,9 +12,19 @@ import { getpaymentbyid, validerpayment } from "../../api/apipayment.js";
 
 export default function HistoriqueNotification() {
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true); // 👈 indique si les données sont en chargement
+  const [loading, setLoading] = useState(true);
 
-  // Charger les paiements de l'utilisateur connecté
+  // Fonction qui convertit en format heure/minute
+  const formatTemps = (minutes) => {
+    if (minutes < 60) return `${minutes} min`;
+
+    const heures = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    return `${heures}h ${mins > 0 ? mins + "min" : ""}`;
+  };
+
+  // Charger les paiements
   useEffect(() => {
     const fetchPayments = async () => {
       try {
@@ -31,7 +41,7 @@ export default function HistoriqueNotification() {
             hour: "2-digit",
             minute: "2-digit",
           }),
-          tempsPasse: `${Math.floor(p.duree_utilisation / 60)} min`,
+          tempsPasse: formatTemps(Math.floor(p.duree_utilisation / 60)),
           prix: `${p.value} Ar`,
           valide: p.validation_du_payement === 1,
         }));
@@ -39,9 +49,9 @@ export default function HistoriqueNotification() {
         setTimeout(() => {
           setRows(formatted);
           setLoading(false);
-        }, 1200); // 👈 petit délai pour un effet plus visible
+        }, 1200);
       } catch (error) {
-        console.error("❌ Erreur lors du chargement des paiements:", error);
+        console.error("❌ Erreur chargement paiements:", error);
         setLoading(false);
       }
     };
@@ -49,7 +59,7 @@ export default function HistoriqueNotification() {
     fetchPayments();
   }, []);
 
-  // Fonction pour valider un paiement
+  // Valider paiement
   const handleValidation = async (id_payement) => {
     try {
       await validerpayment(id_payement);
@@ -59,11 +69,11 @@ export default function HistoriqueNotification() {
         )
       );
     } catch (error) {
-      console.error("❌ Erreur lors de la validation du paiement:", error);
+      console.error("❌ Erreur validation paiement:", error);
     }
   };
 
-  const shimmerCell = <div className="shimmer-cell"></div>; // 👈 effet mirage dans la cellule
+  const shimmerCell = <div className="shimmer-cell"></div>;
 
   const columns = [
     {
@@ -144,7 +154,7 @@ export default function HistoriqueNotification() {
 
       <div className="data-grid-container">
         <DataGrid
-          rows={rows.length > 0 ? rows : Array(5).fill({ id: Math.random() })} // 👈 garde des lignes fictives si loading
+          rows={rows.length > 0 ? rows : Array(5).fill({ id: Math.random() })}
           columns={columns}
           pagination
           pageSize={5}

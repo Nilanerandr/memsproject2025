@@ -54,11 +54,11 @@ const [heureOff, setHeureOff] = useState("");
         } else if (seconds < 3600) {
           const minutes = Math.floor(seconds / 60);
           const reste = seconds % 60;
-          timeText = `${minutes}m ${reste > 0 ? `${reste}s` : ""}`;
+          timeText = `${minutes}min ${reste > 0 ? `${reste}s` : ""}`;
         } else {
           const hours = Math.floor(seconds / 3600);
           const minutes = Math.floor((seconds % 3600) / 60);
-          timeText = `${hours}h ${minutes > 0 ? `${minutes}m` : ""}`;
+          timeText = `${hours}h ${minutes > 0 ? `${minutes}min` : ""}`;
         }
 
         return { ...m, watts, timeText };

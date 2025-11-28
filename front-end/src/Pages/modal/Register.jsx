@@ -39,7 +39,7 @@ export default function RegisterModal({ open, onClose, onSuccess }) {
 
     try {
       const formData = new FormData(e.currentTarget);
-      if (photoFile) formData.set('photo', photoFile);
+      if (photoFile) formData.set('img', photoFile);
 
       const userResponse = await registerUser(formData);
       const { user, token } = userResponse;

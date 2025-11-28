@@ -57,7 +57,7 @@ const Home = () => {
   ];
 
   return (
-    <div style={{ position: "absolute", zIndex: 10, width: "100%", display: "flex", justifyContent: "center", top: "10vw" }}>
+    <div style={{ position: "absolute", zIndex: 10, width: "100%", display: "flex", justifyContent: "center", top: "14vw" }}>
       <CardNav
         items={items}
         baseColor="#ffffff49"
