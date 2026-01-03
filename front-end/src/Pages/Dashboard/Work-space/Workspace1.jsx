@@ -75,9 +75,9 @@ export default function Utilisateurs() {
   const staticMachines = [
     {
       id: "Poste-1",
-      active: true,
-      usedMinutes: 1800,
-      watts: 45,
+      active: false,
+      usedMinutes: 0,
+      watts: 0,
     },
     
   ];

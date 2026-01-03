@@ -66,7 +66,7 @@ export default function App() {
         position: "relative",
         height: "100vh",
         overflow: "hidden",
-        background: "radial-gradient(circle at center, #0c1e42ff, #000000)",
+        background: "radial-gradient(circle at center, #273f6eff, #23212bff)",
       }}
     >
       {/* <Hyperspeed /> */}
